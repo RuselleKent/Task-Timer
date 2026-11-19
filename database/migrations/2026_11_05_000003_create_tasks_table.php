@@ -21,8 +21,9 @@ return new class extends Migration
             $table->string('description', 500)->nullable(); // Optional na detalye tungkol sa task
             $table->enum('status', ['Running', 'Paused', 'Stopped'])->default('Running'); // Awtomatikong 'Running' sa simula
 
-            $table->timestamp('created_on')->useCurrent();
-            $table->timestamp('updated_on')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamp('created_at')->useCurrent();
+            $table->foreignId('created_by')->constrained('users')->restrictOnDelete(); // Kung sinong user ang nag-start ng task
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
 
             // Para mabilis ma-check kung may active tracker pa ang user, at para bumilis din ang Tasks page

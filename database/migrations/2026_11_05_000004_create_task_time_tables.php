@@ -20,7 +20,8 @@ return new class extends Migration
             $table->dateTime('end_time')->nullable(); // Naka-null hangga't tumatakbo pa ang timer
             $table->enum('end_reason', ['Paused', 'Stopped'])->nullable(); // Null din hangga't hindi pa pina-pause o stop
             $table->boolean('altered')->default(false); // Magiging true kapag may binago o inedit sa time record
-            $table->timestamp('created_on')->useCurrent();
+            $table->timestamp('created_at')->useCurrent();
+            $table->foreignId('created_by')->constrained('users')->restrictOnDelete(); // Kung sinong user ang nag-start ng oras
 
             // Para mapabilis ang loading ng reports (filtering per task at per araw)
             $table->index(['task_id', 'start_time']);
@@ -41,11 +42,11 @@ return new class extends Migration
             $table->foreignId('task_time_id')->constrained('task_times')->restrictOnDelete(); // Reference kung anong record ang inedit
             $table->dateTime('old_start_time'); // Required; mga tapos na time records lang ang pwedeng ma-edit dito
             $table->dateTime('old_end_time');
-            $table->foreignId('updated_by')->constrained('users')->restrictOnDelete(); // Kung sinong user ang nagbago
-            $table->timestamp('change_at')->useCurrent(); // Oras kung kailan binago. Hindi na ine-edit ang row na 'to kaya walang created_on at updated_on
+            $table->timestamp('created_at')->useCurrent(); // Oras kung kailan binago. Hindi na ine-edit ang row na 'to kaya walang updated_at at updated_by
+            $table->foreignId('created_by')->constrained('users')->restrictOnDelete(); // Kung sinong user ang nagbago ng oras
 
             // Para mabilis ma-load ang historical change logs ng isang time record nang sunod-sunod sa petsa
-            $table->index(['task_time_id', 'change_at']);
+            $table->index(['task_time_id', 'created_at']);
         });
     }
 

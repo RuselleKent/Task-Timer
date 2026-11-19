@@ -24,8 +24,9 @@ return new class extends Migration
             $table->string('position')->nullable();
 
             // Audit fields: Standard configuration para sa pagsubaybay ng records
-            $table->timestamp('created_on')->useCurrent();
-            $table->timestamp('updated_on')->useCurrent()->useCurrentOnUpdate(); // Automatic nag-a-update tuwing may pagbabago sa row
+            $table->timestamp('created_at')->useCurrent(); // Kailan ginawa ang row
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete(); // Kung sinong user ang gumawa nito. Null lang sa pinakaunang user kasi wala pang gumawa sa kaniya
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate(); // Automatic nag-a-update tuwing may pagbabago sa row
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete(); // Kung sinong user ang huling nag-edit nito
         });
     }
